@@ -30,11 +30,11 @@
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage4"
+      :current-page="searchpeople.pagenum"
       :page-sizes="[5, 10, 15, 20]"
-      :page-size="5"
+      :page-size="searchpeople.pagesize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
+      :total="total"
     ></el-pagination>
   </div>
 </template>
@@ -50,19 +50,26 @@ export default {
       searchpeople:{
         query:'',
         pagenum:1,
-        pagesize:7,
+        pagesize:5,
       },
+      total:0,
       tableData: [],
     };
   },
   methods: {
-    handleSizeChange() {},
-    handleCurrentChange() {},
-    currentPage4() {},
+    handleSizeChange(pagesize) {
+      this.searchpeople.pagesize = pagesize
+      this.getUsers()
+    },
+    handleCurrentChange(page) {
+      this.searchpeople.pagenum = page
+      this.getUsers()
+    },
     getUsers(){
       users(this.searchpeople).then(qwe=>{
         window.console.log(qwe)
         this.tableData = qwe.data.data.users
+        this.total = qwe.data.data.total
       })
     }
 
