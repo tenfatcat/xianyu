@@ -5,7 +5,13 @@
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-input placeholder="请输入内容" v-model="input3" class="input-with-select inputSearch">
+
+    <!-- 未优化版的 input 关键词搜索事件写法 -->
+    <!-- @input 为组件自带的事件名 -->
+    <!-- <el-input @input="search" placeholder="请输入内容" v-model.trim="input3" class="input-with-select inputSearch"> -->
+
+      <!-- 优化后的方案 -->
+    <el-input @input="getUsers" placeholder="请输入内容" v-model.trim="searchpeople.query" class="input-with-select inputSearch">
       <el-button slot="append" icon="el-icon-search"></el-button>
     </el-input>
     <el-button type="success" plain>添加用户</el-button>
@@ -45,8 +51,10 @@ export default {
   name:'users',
   data() {
     return {
-      input3: "",
-      value: false,
+
+      // input3: "",
+
+
       searchpeople:{
         query:'',
         pagenum:1,
@@ -57,6 +65,15 @@ export default {
     };
   },
   methods: {
+    
+    // 根据输入内容搜索用户
+    // search(){
+    //   this.searchpeople.query = this.input3
+    //   this.searchpeople.pagenum = 1
+    //   this.getUsers()
+    // },
+
+
     handleSizeChange(pagesize) {
       this.searchpeople.pagesize = pagesize
       this.getUsers()
@@ -65,7 +82,11 @@ export default {
       this.searchpeople.pagenum = page
       this.getUsers()
     },
+
+
     getUsers(){
+      if(this.searchpeople.query!='')
+      this.searchpeople.pagenum = 1;
       users(this.searchpeople).then(qwe=>{
         window.console.log(qwe)
         this.tableData = qwe.data.data.users
