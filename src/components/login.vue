@@ -71,7 +71,6 @@ import { login } from '../api/axios'
              }
            })
           } else {
-            window.console.log('error submit!!');
             return false;
           }
         });

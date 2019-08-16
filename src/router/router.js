@@ -8,13 +8,27 @@ Vue.use(VueRouter)
 import login from '../components/login.vue'
 import index from '../components/index.vue'
 import users from '../components/userlist.vue'
+import orders from '../components/orders.vue'
+import goods from '../components/goods.vue'
+import rights from '../components/rights.vue'
+import roles from '../components/roles.vue'
+import params from '../components/params.vue'
+import categories from '../components/categories.vue'
+import reports from '../components/reports.vue'
 
 const routes = [
     { path: '/login', component: login },
     { path: '', redirect: 'login' },
     {
         path: '/index', component: index, children: [
-            {path:'users',component:users}
+            {path:'/users',component:users},
+            {path:'/orders',component:orders},
+            {path:'/rights',component:rights},
+            {path:'/goods',component:goods},
+            {path:'/params',component:params},
+            {path:'/reports',component:reports},
+            {path:'/roles',component:roles},
+            {path:'/categories',component:categories}
         ]
     },
 ]
@@ -36,7 +50,7 @@ router.beforeEach((to, from, next) => {
             router.push('/login')
         }
     } else {
-        next()
+       next()
     }
 })
 

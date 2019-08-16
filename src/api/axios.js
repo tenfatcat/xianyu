@@ -19,3 +19,16 @@ export const menus = ()=>{
         }
     })
 }
+export const users = ({query,pagenum,pagesize})=>{
+
+    return http.get('users',{
+        headers:{
+            Authorization:window.localStorage.getItem('token')
+        },
+        params:{
+            query,
+        pagenum,
+        pagesize
+        }
+    })
+}

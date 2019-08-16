@@ -8,13 +8,13 @@
     <el-container>
       <el-aside width="200px" class="my-aside">
         <el-menu class="el-menu-vertical-demo" :unique-opened="true" router>
-          <el-submenu v-for="(item,index) in menulist" :index=" ''+index" >
+          <el-submenu v-for="(item,index) in menulist" :index=" ''+index" :key="index">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>{{item.authName}}</span>
             </template>
 
-            <el-menu-item v-for="subitem in item.children" :index="'index/' + subitem.path" >
+            <el-menu-item v-for="(subitem,index) in item.children" :index=" subitem.path" :key="index">
               <i class="el-icon-menu"></i>
               {{ subitem.authName }}
             </el-menu-item>
@@ -66,7 +66,7 @@ export default {
   },
   created(){
     menus().then(qwe=>{
-      window.console.log(qwe)
+      // window.console.log(qwe)
       this.menulist = qwe.data.data
     })
   }
