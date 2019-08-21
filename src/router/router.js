@@ -1,9 +1,8 @@
 import Vue from 'vue'
-
+import {menus} from '../api/axios'
 
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
-
 
 import login from '../components/login.vue'
 import index from '../components/index.vue'
@@ -21,14 +20,15 @@ const routes = [
     { path: '', redirect: 'login' },
     {
         path: '/index', component: index, children: [
-            {path:'/users',component:users},
-            {path:'/orders',component:orders},
-            {path:'/rights',component:rights},
-            {path:'/goods',component:goods},
-            {path:'/params',component:params},
-            {path:'/reports',component:reports},
-            {path:'/roles',component:roles},
-            {path:'/categories',component:categories}
+            //  meta: { requiresAuth: true } 路由元信息,给页面添加一个自定义的meta信息,交由导航守卫判断是否可以无登录进入
+            {path:'/users',component:users, meta: { requiresAuth: true }},
+            {path:'/orders',component:orders, meta: { requiresAuth: true }},
+            {path:'/rights',component:rights, meta: { requiresAuth: true }},
+            {path:'/goods',component:goods, meta: { requiresAuth: true }},
+            {path:'/params',component:params, meta: { requiresAuth: true }},
+            {path:'/reports',component:reports, meta: { requiresAuth: true }},
+            {path:'/roles',component:roles, meta: { requiresAuth: true }},
+            {path:'/categories',component:categories, meta: { requiresAuth: true }}
         ]
     },
 ]
@@ -38,17 +38,18 @@ const router = new VueRouter({
 })
 // 导航守卫,在进入页面时判断有没有登录
 router.beforeEach((to, from, next) => {
-    // 判断要进入的是不是首页, != -1 就是要进入
-    if (to.path.indexOf('index') != -1) {
-        // 从本地存储中判断有没有  token 
-        if (window.localStorage.getItem('token')) {
-            next()
-        } else {
-            // 没有 token,跳回登录页
-            // this.$message 只能在 vue 文件中使用,在js文件中 this 的指向是window,所以用 Vue. 的实例对象来使用
-            Vue.prototype.$message.error('请先登录！')
-            router.push('/login')
-        }
+    // 判断有没有设置  meta: { requiresAuth: true }  ,有的就需要登录
+    if (to.meta.requiresAuth) {
+        // 随便发一个请求,让服务器判断 token 是否有效
+        menus().then(qwe=>{
+            if(qwe.data.meta.status == 400 && qwe.data.meta.msg == "无效token"){
+                Vue.prototype.$message.error('请先登录')
+                router.push('/login')
+            }else{
+                next()
+            }
+        })
+        
     } else {
        next()
     }
